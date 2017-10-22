@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 19-oct-2017 9:10:42 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="Modelo.Solicitud" table="Solicitud" catalog="proyectoADT" optimistic-lock="version">
+        <id name="idSolicitud" type="java.lang.Integer">
+            <column name="idSolicitud" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="usuario" class="Modelo.Usuario" fetch="select">
+            <column name="Usuario_idUsuario" not-null="true" />
+        </many-to-one>
+        <property name="fechaIngreso" type="timestamp">
+            <column name="fechaIngreso" length="0" />
+        </property>
+        <property name="nombre" type="string">
+            <column name="nombre" length="45" />
+        </property>
+        <property name="apellido" type="string">
+            <column name="apellido" length="45" />
+        </property>
+        <property name="region" type="string">
+            <column name="region" length="45" />
+        </property>
+        <property name="localidad" type="string">
+            <column name="localidad" length="45" />
+        </property>
+        <property name="telefono" type="string">
+            <column name="telefono" length="45" />
+        </property>
+        <property name="email" type="string">
+            <column name="email" length="45" />
+        </property>
+        <property name="rut" type="string">
+            <column name="rut" length="45" />
+        </property>
+        <property name="origen" type="string">
+            <column name="origen" length="45" />
+        </property>
+    </class>
+</hibernate-mapping>
