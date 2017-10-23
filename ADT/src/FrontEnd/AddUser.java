@@ -5,23 +5,88 @@
  */
 package FrontEnd;
 
+import Code.NewHibernateUtil;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import Modelo.*;
+import javax.swing.JOptionPane;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 /**
  *
  * @author Pepe
  */
 public class AddUser extends javax.swing.JFrame {
-
-    /**
-     * Creates new form AddUser
-     */
-    public AddUser() {
+    
+    Admin admin;
+    boolean search = false;
+    Usuario user;
+    
+    public AddUser(Admin admin, boolean search, Usuario searchedUser) {
         initComponents();
         this.setTitle("ADT Alpha");
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+        this.admin = admin;
+        this.search = search;
+        this.user = searchedUser;
+        if (search) {
+            txt_name.setText(user.getNombre());
+            txt_sname.setText(user.getApellido());
+            txt_email.setText(user.getEmail());
+            txt_nick.setText(user.getNick());
+            txt_pass.setText(user.getPassword());
+            txt_tel.setText(user.getTelefono());
+            cb_type.setSelectedItem(user.getTipo());
+            btn_register.setVisible(false);
+        } else {
+            btn_modify.setVisible(false);
+            btn_delete.setVisible(false);
+        }
+    }
+    
+    public void register() {
+        String name, sname, email, nick, pass, tel, type;
+        name = txt_name.getText();
+        sname = txt_sname.getText();
+        email = txt_email.getText();
+        nick = txt_nick.getText();
+        pass = txt_pass.getText();
+        tel = txt_tel.getText();
+        type = cb_type.getSelectedItem().toString();
+        
+        if (!(txt_pass.getText().equals(txt_repass.getText())) || (txt_name.getText().equals("")) || (txt_tel.getText().equals("")) || (txt_sname.getText().equals("")) || (txt_nick.getText().equals("")) || (txt_email.getText().equals("")) || (txt_pass.getText().equals("")) || (txt_repass.getText().equals(""))) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Debe llenar todos los campos obligatorios (*)\n", "AVISO!", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            SessionFactory main = NewHibernateUtil.getSessionFactory();
+            Session session;
+            //        apertura sesion hibernate
+            session = main.openSession();
+//        Query, con parametro nick particular igual a->formUser
+            Query query = session.createQuery("FROM Usuario u WHERE u.nick=:nick");
+            query.setParameter("nick", txt_nick.getText());
+//        Extracción de objeto usuario desde la DB (se puede extraer lista con query.list();
+            Usuario check = (Usuario) query.uniqueResult();
+            session.close();
+            if (check != null) {
+                JOptionPane.showMessageDialog(this, "El nombre de usuario se encuentra en uso");
+            } else {
+                Usuario user = new Usuario(name, sname, nick, pass, tel, email, type);
+                admin.add(user);
+                this.txt_tel.setText("");
+                this.txt_name.setText("");
+                this.txt_sname.setText("");
+                this.txt_email.setText("");
+                this.txt_pass.setText("");
+                this.txt_repass.setText("");
+                this.txt_nick.setText("");
+                
+            }
+        }
+
+        // TODO add your handling code here:
     }
 
     /**
@@ -38,16 +103,20 @@ public class AddUser extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        slct_admin = new javax.swing.JRadioButton();
-        slct_user = new javax.swing.JRadioButton();
         jLabel6 = new javax.swing.JLabel();
         btn_register = new javax.swing.JButton();
         txt_name = new javax.swing.JTextField();
         txt_sname = new javax.swing.JTextField();
-        txt_dni = new javax.swing.JTextField();
+        txt_email = new javax.swing.JTextField();
         txt_nick = new javax.swing.JTextField();
         txt_pass = new javax.swing.JPasswordField();
         txt_repass = new javax.swing.JPasswordField();
+        cb_type = new javax.swing.JComboBox<>();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        txt_tel = new javax.swing.JTextField();
+        btn_modify = new javax.swing.JButton();
+        btn_delete = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -55,19 +124,20 @@ public class AddUser extends javax.swing.JFrame {
 
         jLabel2.setText("Apellido");
 
-        jLabel3.setText("DNI");
+        jLabel3.setText("E-mail");
 
-        jLabel4.setText("Nick");
+        jLabel4.setText("Nombre usuario");
 
         jLabel5.setText("Contraseña");
-
-        slct_admin.setText("admin");
-
-        slct_user.setText("User");
 
         jLabel6.setText("Repetir contraseña");
 
         btn_register.setText("Registrar");
+        btn_register.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_registerActionPerformed(evt);
+            }
+        });
 
         txt_name.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -75,40 +145,73 @@ public class AddUser extends javax.swing.JFrame {
             }
         });
 
+        cb_type.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Admin", "Vendedor", "Auditor" }));
+        cb_type.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_typeActionPerformed(evt);
+            }
+        });
+
+        jLabel7.setText("Tipo de usuario");
+
+        jLabel8.setText("Teléfono");
+
+        txt_tel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_telActionPerformed(evt);
+            }
+        });
+        txt_tel.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_telKeyTyped(evt);
+            }
+        });
+
+        btn_modify.setText("Modificar");
+        btn_modify.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_modifyActionPerformed(evt);
+            }
+        });
+
+        btn_delete.setText("Eliminar");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(70, 70, 70)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel6))
-                .addGap(104, 104, 104)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(70, 70, 70)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txt_name)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel7))
+                        .addGap(104, 104, 104)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cb_type, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txt_name, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
                             .addComponent(txt_sname)
-                            .addComponent(txt_dni, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txt_email, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(txt_nick, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(txt_pass, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(txt_repass, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addGap(94, 94, 94))
+                            .addComponent(txt_repass, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txt_tel)))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(slct_admin)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
-                        .addComponent(slct_user)
-                        .addGap(78, 78, 78))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btn_register)
-                .addGap(59, 59, 59))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btn_delete)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btn_modify)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btn_register)))
+                .addGap(94, 94, 94))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -126,25 +229,32 @@ public class AddUser extends javax.swing.JFrame {
                         .addGap(27, 27, 27)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(txt_dni, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txt_email, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(24, 24, 24)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
                             .addComponent(txt_nick, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(25, 25, 25)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txt_pass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5))
                         .addGap(26, 26, 26)
                         .addComponent(jLabel6))
                     .addComponent(txt_repass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(34, 34, 34)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(slct_admin)
-                    .addComponent(slct_user))
                 .addGap(18, 18, 18)
-                .addComponent(btn_register)
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(txt_tel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cb_type, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_register)
+                    .addComponent(btn_modify)
+                    .addComponent(btn_delete))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
 
         pack();
@@ -154,25 +264,52 @@ public class AddUser extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_nameActionPerformed
 
+    private void cb_typeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_typeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cb_typeActionPerformed
+
+    private void txt_telActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_telActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_telActionPerformed
+
+    private void btn_registerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_registerActionPerformed
+        this.register();   // TODO add your handling code here:
+    }//GEN-LAST:event_btn_registerActionPerformed
+
+    private void txt_telKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_telKeyTyped
+        char c = evt.getKeyChar();
+        if (c < '0' || c > '9') {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txt_telKeyTyped
+
+    private void btn_modifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_modifyActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_modifyActionPerformed
+
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_delete;
+    private javax.swing.JButton btn_modify;
     private javax.swing.JButton btn_register;
+    private javax.swing.JComboBox<String> cb_type;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JRadioButton slct_admin;
-    private javax.swing.JRadioButton slct_user;
-    private javax.swing.JTextField txt_dni;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JTextField txt_email;
     private javax.swing.JTextField txt_name;
     private javax.swing.JTextField txt_nick;
     private javax.swing.JPasswordField txt_pass;
     private javax.swing.JPasswordField txt_repass;
     private javax.swing.JTextField txt_sname;
+    private javax.swing.JTextField txt_tel;
     // End of variables declaration//GEN-END:variables
 }

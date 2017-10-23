@@ -32,7 +32,6 @@ public class ClientConsult extends javax.swing.JFrame {
     String config[] = {"jdbc:mysql://undercode.com.ar:3306/proyectoADT", "jvidelaolmos", "MoTorp21co"};
     String titulos[] = {"id-cliente", "Fecha de ingreso", "Nombre", "Apellido", "Telefono", "E-mail", "Region", "Estado", "Vendedor"};
     String fila[] = new String[9];
-    Connection con = null;
     Statement stmt = null;
     DefaultTableModel modelo;
     BasicDataSource bds = new BasicDataSource();

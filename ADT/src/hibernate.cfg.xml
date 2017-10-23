@@ -40,13 +40,16 @@ made subject to such option by the copyright holder.
 Contributor(s):
 -->
 <hibernate-configuration>
-  <session-factory>
-    <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
-    <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-    <property name="hibernate.connection.url">jdbc:mysql://undercode.com.ar:3306/proyectoADT?zeroDateTimeBehavior=convertToNull</property>
-    <property name="hibernate.connection.username">jvidelaolmos</property>
-    <property name="hibernate.connection.password">MoTorp21co</property>
-    <mapping resource="Modelo/Solicitud.hbm.xml"/>
-    <mapping resource="Modelo/Usuario.hbm.xml"/>
-  </session-factory>
+    <session-factory>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.url">jdbc:mysql://undercode.com.ar:3306/proyectoADT?zeroDateTimeBehavior=convertToNull</property>
+        <property name="hibernate.connection.username">jvidelaolmos</property>
+        <property name="hibernate.connection.password">MoTorp21co</property>
+        <property name="connection.autoReconnect">true</property>
+        <property name="connection.autoReconnectForPools">true</property>
+        <property name="connection.is-connection-validation-required">true</property>
+        <mapping resource="Modelo/Solicitud.hbm.xml"/>
+        <mapping resource="Modelo/Usuario.hbm.xml"/>
+    </session-factory>
 </hibernate-configuration>

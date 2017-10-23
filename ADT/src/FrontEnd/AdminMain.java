@@ -8,7 +8,10 @@ package FrontEnd;
 import Modelo.*;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.hibernate.SessionFactory;
 
 /**
  *
@@ -18,6 +21,7 @@ public class AdminMain extends javax.swing.JFrame {
 //    instanciacion del pool de conexiones
 
     BasicDataSource bds = new BasicDataSource();
+    Admin admin;
 
     /**
      * Creates new form MainFrame
@@ -33,8 +37,9 @@ public class AdminMain extends javax.swing.JFrame {
 //        recibo parametros desde LogIn al pool de conexiones
         this.bds = bds;
 //        construccion de objeto admin porque no se puede castear usuario a admin
-        Admin admin = new Admin(usuario.getNick(), usuario.getEmail(), usuario.getPassword(), usuario.getCreateTime(), usuario.getNombre(), usuario.getApellido(), usuario.getTelefono(), usuario.getTipo(), usuario.getSolicituds());
+        admin = new Admin(usuario.getNick(), usuario.getEmail(), usuario.getPassword(), usuario.getCreateTime(), usuario.getNombre(), usuario.getApellido(), usuario.getTelefono(), usuario.getTipo(), usuario.getSolicituds());
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -49,6 +54,7 @@ public class AdminMain extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
 
@@ -71,6 +77,14 @@ public class AdminMain extends javax.swing.JFrame {
             }
         });
         jMenu1.add(jMenuItem3);
+
+        jMenuItem4.setText("Buscar / Editar");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem4);
 
         jMenuBar1.add(jMenu1);
 
@@ -112,9 +126,23 @@ public class AdminMain extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        AddUser addu = new AddUser();
+        boolean search=false;
+        AddUser addu = new AddUser(admin, search, null);
         addu.setVisible(true);// TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+    String parameter = JOptionPane.showInputDialog("Ingrese Nombre de usuario");
+    Usuario user;
+    user=admin.search(parameter);
+    boolean search=true;
+    if(user==null){
+        JOptionPane.showMessageDialog(null, "Usuario ingresado no registrado");
+    }else{
+    AddUser add= new AddUser(admin, search, user);
+    add.setVisible(true);
+    }
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -127,5 +155,6 @@ public class AdminMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
     // End of variables declaration//GEN-END:variables
 }

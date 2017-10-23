@@ -26,6 +26,7 @@ import org.hibernate.Session;
  */
 public class LogIn extends javax.swing.JFrame {
 //        Creación de SessionFactory y sesion hibernate
+
     String config[] = {"jdbc:mysql://undercode.com.ar:3306/proyectoADT", "jvidelaolmos", "MoTorp21co"};
     SessionFactory main = NewHibernateUtil.getSessionFactory();
     Session session;
@@ -126,7 +127,8 @@ public class LogIn extends javax.swing.JFrame {
         query.setParameter("nick", formUser);
 //        Extracción de objeto usuario desde la DB (se puede extraer lista con query.list();
         Usuario usuario = (Usuario) query.uniqueResult();
-        if (query.uniqueResult() != null) {
+        session.close();
+        if (usuario != null) {
             System.out.println(usuario.getNick());
             System.out.println(usuario.getPassword());
 //            Chequeo de contraseña y usuario correcto
@@ -135,7 +137,7 @@ public class LogIn extends javax.swing.JFrame {
                 switch (usuario.getTipo()) {
                     case "admin":
                         this.dispose();
-                        AdminMain am = new AdminMain(usuario,bds);
+                        AdminMain am = new AdminMain(usuario, bds);
                         am.setVisible(true);
                         break;
                     case "vendedor":
@@ -152,7 +154,8 @@ public class LogIn extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "El usuario ingresado no existe");
         }
-        session.close();
+        
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
