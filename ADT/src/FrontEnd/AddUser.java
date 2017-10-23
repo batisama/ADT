@@ -19,11 +19,11 @@ import org.hibernate.SessionFactory;
  * @author Pepe
  */
 public class AddUser extends javax.swing.JFrame {
-    
+
     Admin admin;
     boolean search = false;
     Usuario user;
-    
+
     public AddUser(Admin admin, boolean search, Usuario searchedUser) {
         initComponents();
         this.setTitle("ADT Alpha");
@@ -46,7 +46,7 @@ public class AddUser extends javax.swing.JFrame {
             btn_delete.setVisible(false);
         }
     }
-    
+
     public void register() {
         String name, sname, email, nick, pass, tel, type;
         name = txt_name.getText();
@@ -56,7 +56,7 @@ public class AddUser extends javax.swing.JFrame {
         pass = txt_pass.getText();
         tel = txt_tel.getText();
         type = cb_type.getSelectedItem().toString();
-        
+
         if (!(txt_pass.getText().equals(txt_repass.getText())) || (txt_name.getText().equals("")) || (txt_tel.getText().equals("")) || (txt_sname.getText().equals("")) || (txt_nick.getText().equals("")) || (txt_email.getText().equals("")) || (txt_pass.getText().equals("")) || (txt_repass.getText().equals(""))) {
             javax.swing.JOptionPane.showMessageDialog(this, "Debe llenar todos los campos obligatorios (*)\n", "AVISO!", javax.swing.JOptionPane.INFORMATION_MESSAGE);
         } else {
@@ -82,11 +82,34 @@ public class AddUser extends javax.swing.JFrame {
                 this.txt_pass.setText("");
                 this.txt_repass.setText("");
                 this.txt_nick.setText("");
-                
+
             }
         }
 
         // TODO add your handling code here:
+    }
+
+    public void modify() {
+
+        String name, sname, email, nick, pass, tel, type;
+        user.setNombre(txt_name.getText());
+        user.setApellido(txt_sname.getText());
+        user.setEmail(txt_email.getText());
+        user.setNick(txt_nick.getText());
+        user.setPassword(txt_pass.getText());
+        user.setTelefono(txt_tel.getText());
+        user.setTipo(cb_type.getSelectedItem().toString());
+
+        if (!(txt_pass.getText().equals(txt_repass.getText())) || (txt_name.getText().equals("")) || (txt_tel.getText().equals("")) || (txt_sname.getText().equals("")) || (txt_nick.getText().equals("")) || (txt_email.getText().equals("")) || (txt_pass.getText().equals("")) || (txt_repass.getText().equals(""))) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Debe llenar todos los campos obligatorios (*)\n", "AVISO!", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            admin.update(user);
+        }
+
+    }
+    
+    public void drop(){
+        admin.drop(user);
     }
 
     /**
@@ -175,6 +198,11 @@ public class AddUser extends javax.swing.JFrame {
         });
 
         btn_delete.setText("Eliminar");
+        btn_delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_deleteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -284,8 +312,12 @@ public class AddUser extends javax.swing.JFrame {
     }//GEN-LAST:event_txt_telKeyTyped
 
     private void btn_modifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_modifyActionPerformed
-        // TODO add your handling code here:
+        this.modify();
     }//GEN-LAST:event_btn_modifyActionPerformed
+
+    private void btn_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_deleteActionPerformed
+        this.drop();
+    }//GEN-LAST:event_btn_deleteActionPerformed
 
     /**
      * @param args the command line arguments

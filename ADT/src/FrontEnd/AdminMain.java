@@ -39,7 +39,6 @@ public class AdminMain extends javax.swing.JFrame {
 //        construccion de objeto admin porque no se puede castear usuario a admin
         admin = new Admin(usuario.getNick(), usuario.getEmail(), usuario.getPassword(), usuario.getCreateTime(), usuario.getNombre(), usuario.getApellido(), usuario.getTelefono(), usuario.getTipo(), usuario.getSolicituds());
     }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -126,22 +125,22 @@ public class AdminMain extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        boolean search=false;
+        boolean search = false;
         AddUser addu = new AddUser(admin, search, null);
         addu.setVisible(true);// TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-    String parameter = JOptionPane.showInputDialog("Ingrese Nombre de usuario");
-    Usuario user;
-    user=admin.search(parameter);
-    boolean search=true;
-    if(user==null){
-        JOptionPane.showMessageDialog(null, "Usuario ingresado no registrado");
-    }else{
-    AddUser add= new AddUser(admin, search, user);
-    add.setVisible(true);
-    }
+        String parameter = JOptionPane.showInputDialog("Ingrese Nombre de usuario");
+        Usuario user;
+        user = admin.search(parameter);
+        boolean search = true;
+        if (user == null) {
+            JOptionPane.showMessageDialog(null, "Usuario ingresado no registrado","Error",JOptionPane.ERROR_MESSAGE);
+        } else {
+            AddUser add = new AddUser(admin, search, user);
+            add.setVisible(true);
+        }
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     /**

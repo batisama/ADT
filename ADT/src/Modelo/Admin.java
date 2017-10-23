@@ -39,7 +39,6 @@ public class Admin extends Usuario {
         session = factory.openSession();
         Transaction tx = null;
         System.out.println("save");
-
         try {
             tx = session.beginTransaction();
             session.save(user);
@@ -51,9 +50,8 @@ public class Admin extends Usuario {
             }
             throw e;
         }
-
         session.close();
-        JOptionPane.showMessageDialog(null, "Usuario " + user.getNick() + " ingresado exitosamente!");
+        JOptionPane.showMessageDialog(null, "Usuario " + user.getNick() + " ingresado exitosamente!", "Info", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public Usuario search(String parameter) {
@@ -68,6 +66,60 @@ public class Admin extends Usuario {
         Usuario user = (Usuario) query.uniqueResult();
         session.close();
         return user;
+    }
+
+    public void update(Usuario user) {
+        SessionFactory factory = NewHibernateUtil.getSessionFactory();
+        System.out.println(factory.isClosed());
+        Session session;
+        session = factory.openSession();
+        Transaction tx = null;
+        System.out.println("update");
+        int dialogButton = JOptionPane.YES_NO_OPTION;
+        int dialogResult = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea modificar los datos del usuario " + user.getNick() + "?", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        if (dialogResult == 0) {
+            try {
+                tx = session.beginTransaction();
+                session.update(user);
+                tx.commit();
+
+            } catch (Exception e) {
+                if (tx != null) {
+                    tx.rollback();
+                }
+                throw e;
+            }
+            session.close();
+            JOptionPane.showMessageDialog(null, "Usuario " + user.getNick() + " modificado exitosamente!", "Info", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    public void drop(Usuario user) {
+
+        SessionFactory factory = NewHibernateUtil.getSessionFactory();
+        System.out.println(factory.isClosed());
+        Session session;
+        session = factory.openSession();
+        Transaction tx = null;
+        System.out.println("drop");
+        int dialogButton = JOptionPane.YES_NO_OPTION;
+        int dialogResult = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea eliminar el usuario " + user.getNick() + "?", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        if (dialogResult == 0) {
+            try {
+                tx = session.beginTransaction();
+                session.delete(user);
+                tx.commit();
+
+            } catch (Exception e) {
+                if (tx != null) {
+                    tx.rollback();
+                }
+                throw e;
+            }
+            session.close();
+            JOptionPane.showMessageDialog(null, "Usuario " + user.getNick() + " eliminado exitosamente!", "Info", JOptionPane.INFORMATION_MESSAGE);
+        }
+
     }
 
 }
