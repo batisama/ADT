@@ -103,7 +103,7 @@ public class AddUser extends javax.swing.JFrame {
         if (!(txt_pass.getText().equals(txt_repass.getText())) || (txt_name.getText().equals("")) || (txt_tel.getText().equals("")) || (txt_sname.getText().equals("")) || (txt_nick.getText().equals("")) || (txt_email.getText().equals("")) || (txt_pass.getText().equals("")) || (txt_repass.getText().equals(""))) {
             javax.swing.JOptionPane.showMessageDialog(this, "Debe llenar todos los campos obligatorios (*)\n", "AVISO!", javax.swing.JOptionPane.INFORMATION_MESSAGE);
         } else {
-            admin.update(user);
+            admin.updateUser(user);
         }
 
     }

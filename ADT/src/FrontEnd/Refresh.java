@@ -15,13 +15,13 @@ import javax.swing.Timer;
  */
 public class Refresh implements Runnable {
 
-    ClientConsult clientc;
+    AdminClientConsult clientc;
     SellerMain sellerm;
     Timer timer;
     long inicio;
     float descargadosi = 0;
 
-    public Refresh(ClientConsult frame) {
+    public Refresh(AdminClientConsult frame) {
         this.clientc = frame;
 
     }

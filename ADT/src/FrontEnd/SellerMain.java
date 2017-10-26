@@ -30,8 +30,7 @@ public class SellerMain extends javax.swing.JFrame {
     String fila[] = new String[9];
     Connection con = null;
     Statement stmt = null;
-    DefaultTableModel modelo;
-
+    
     /**
      * Creates new form NewJFrame
      */
@@ -54,7 +53,20 @@ public class SellerMain extends javax.swing.JFrame {
             ResultSet resultSet = stmt.executeQuery("SELECT COUNT(*) FROM Solicitud");
             resultSet.next();
             ResultSet rs = stmt.executeQuery("select* from Solicitud");
-            modelo = new DefaultTableModel(null, titulos);
+            
+            DefaultTableModel tableModel = new DefaultTableModel(null, titulos) {
+
+                boolean[] canEdit = new boolean[]{
+                    false, false, false, false, false, false, false, true, false
+                };
+
+                @Override
+                public boolean isCellEditable(int rowIndex, int columnIndex) {
+                    return canEdit[columnIndex];
+                }
+
+            };
+            
             while (rs.next()) {
                 
 
@@ -74,11 +86,10 @@ public class SellerMain extends javax.swing.JFrame {
                 }
                 fila[8] = rs.getString("Usuario_idUsuario");
 
-                modelo.addRow(fila);
+                tableModel.addRow(fila);
             }
-            table.setModel(modelo);
-
-            table.setModel(modelo);
+            table.setModel(tableModel);
+            
             TableColumn ci = table.getColumn("id-cliente");
             ci.setMaxWidth(35);
             TableColumn cf = table.getColumn("Fecha de ingreso");

@@ -38,5 +38,8 @@
         <property name="origen" type="string">
             <column name="origen" length="45" />
         </property>
+        <property name="estado" type="string">
+            <column name="estado" length="45" />
+        </property>
     </class>
 </hibernate-mapping>

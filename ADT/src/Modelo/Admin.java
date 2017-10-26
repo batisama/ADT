@@ -68,7 +68,7 @@ public class Admin extends Usuario {
         return user;
     }
 
-    public void update(Usuario user) {
+    public void updateUser(Usuario user) {
         SessionFactory factory = NewHibernateUtil.getSessionFactory();
         System.out.println(factory.isClosed());
         Session session;

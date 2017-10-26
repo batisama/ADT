@@ -21,6 +21,17 @@ public class Solicitud  implements java.io.Serializable {
      private String email;
      private String rut;
      private String origen;
+     private String estado;
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+
 
     public Solicitud() {
     }
